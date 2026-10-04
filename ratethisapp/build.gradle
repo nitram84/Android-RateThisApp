@@ -1,9 +1,12 @@
-apply plugin: "com.android.library"
-apply plugin: 'com.novoda.bintray-release'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 android {
+    namespace = "com.kobakei.ratethisapp"
+
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 9
@@ -17,19 +20,29 @@ android {
         minifyEnabled false
       }
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.3.2"
+    implementation 'com.android.support:appcompat-v7:25.3.1'
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.robolectric:robolectric:3.5"
 }
 
-publish {
-    userOrg = 'kobakei'
-    groupId = 'io.github.kobakei'
-    artifactId = 'ratethisapp'
-    publishVersion = "1.2.0"
-    desc = 'Android library to show "Rate this app" dialog'
-    website = 'https://github.com/kobakei/Android-RateThisApp'
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.nitram84'
+                artifactId = 'ratethisapp'
+                version = '1.2.0-SNAPSHOT'
+            }
+        }
+    }
 }
